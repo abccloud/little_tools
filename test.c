@@ -7,6 +7,7 @@
 #include "easy_bits_ops.h"
 #include "array_queue.h"
 #include "arraylist.h"
+#include "mem_debug.h"
 
 
 int test_array_list(void)
@@ -128,10 +129,44 @@ int test_array_queue(void)
     printf("aq empty now circle (%d)\n",ii);
     return 0;
 }
+int test_mem_debug(void)
+{
+    int ii = 0;
+#define memdebug_test_num 4096*4
+    void *ptrs[memdebug_test_num] = {0};
+    for(ii=0;ii<memdebug_test_num;ii++)
+    {
+        if(ii%2 == 0)
+        {
+            ptrs[ii] = dg_malloc((ii+1)*64);
+            assert(NULL != ptrs[ii]);
+        }
+        else
+        {
+            ptrs[ii] = dg_calloc((ii+1)*16,2);
+            assert(NULL != ptrs[ii]);
+        }
+    }
+    for(ii=0;ii<memdebug_test_num-16;ii++)
+    {
+        if(ii%2 == 0)
+        {
+            assert(ptrs[ii] == dg_free(ptrs[ii]));
+        }
+        else
+        {
+            assert(ptrs[memdebug_test_num-ii] == dg_free(ptrs[memdebug_test_num-ii]));
+        }
+
+    }
+    mem_debug_show_all(stdout);
+    return 0;
+}
 int main(int argc,char *argv[])
 {
     test_easy_bits();
     test_array_queue();
     test_array_list();
+    test_mem_debug();
     return 0;
 }
