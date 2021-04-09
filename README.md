@@ -3,4 +3,5 @@ some little tools
 
 usage:
 make
+
 ./test
