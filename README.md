@@ -2,5 +2,5 @@
 some little tools
 
 usage:
-gcc test.c -o test
+make
 ./test
